@@ -83,4 +83,11 @@ typedef void(^SDWebImageDownloaderCompletedBlock)(UIImage *image, NSData *data, 
                                        progress:(SDWebImageDownloaderProgressBlock)progressBlock
                                       completed:(SDWebImageDownloaderCompletedBlock)completedBlock;
 
+
+//-------------added method
+/*
+ * clear the operations
+ */
+-(void)cancelOperations;
+
 @end

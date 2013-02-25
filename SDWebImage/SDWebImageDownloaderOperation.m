@@ -51,8 +51,10 @@
 {
     dispatch_async(dispatch_get_main_queue(), ^
     {
+        NSLog(@"Operation Started Called!");
         if (self.isCancelled)
         {
+            NSLog(@"Operation is Cancelled!");
             self.finished = YES;
             [self reset];
             return;
@@ -89,6 +91,7 @@
 
 - (void)cancel
 {
+    NSLog(@"Operation cancel is called!");
     if (self.isFinished) return;
     [super cancel];
     if (self.cancelBlock) self.cancelBlock();

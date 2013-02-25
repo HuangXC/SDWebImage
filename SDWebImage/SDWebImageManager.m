@@ -129,26 +129,33 @@
                         dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_HIGH, 0), ^
                         {
                             UIImage *transformedImage = [self.delegate imageManager:self transformDownloadedImage:downloadedImage withURL:url];
-
-                            dispatch_async(dispatch_get_main_queue(), ^
-                            {
-                                completedBlock(transformedImage, nil, SDImageCacheTypeNone, finished);
-                            });
-
+                            
+                            //change call saved first and then call complete block
+                          
                             if (transformedImage && finished)
                             {
+                                //save image to memory and optional disk
                                 [self.imageCache storeImage:transformedImage imageData:data forKey:key toDisk:cacheOnDisk];
                             }
+                            
+                            dispatch_async(dispatch_get_main_queue(), ^
+                                           {
+                                               //call the complete block on the main queue
+                                               completedBlock(transformedImage, nil, SDImageCacheTypeNone, finished);
+                                           });
+                            
                         });
                     }
                     else
                     {
-                        completedBlock(downloadedImage, nil, SDImageCacheTypeNone, finished);
-
+                      
+            //change call saved first and then call complete block
                         if (downloadedImage && finished)
                         {
                             [self.imageCache storeImage:downloadedImage imageData:data forKey:key toDisk:cacheOnDisk];
                         }
+                        
+                          completedBlock(downloadedImage, nil, SDImageCacheTypeNone, finished);
                     }
                 }
 
@@ -181,7 +188,11 @@
     @synchronized(self.runningOperations)
     {
         [self.runningOperations makeObjectsPerformSelector:@selector(cancel)];
+        
+        NSLog(@"cancell all running Operations count: %d ",[self.runningOperations count]);
         [self.runningOperations removeAllObjects];
+        //HUANG  remove operations
+        [self.imageDownloader cancelOperations];
     }
 }
 
